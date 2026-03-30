@@ -8,12 +8,6 @@ class user(BaseModel):
 
 class userrepsonse(BaseModel):
 
-
-
-
-
-
-    
     name:str
     message: str
 
