@@ -1,0 +1,265 @@
+Awesome—this is where things become **real backend development** 🚀
+You’ll now build a **complete CRUD API system** using **FastAPI**
+
+---
+
+# ✅ **DAY 5 – CRUD APIs (Create, Read, Update, Delete)**
+
+## 🎯 Goal
+
+Build APIs that can:
+
+* Create data
+* Read data
+* Update data
+* Delete data
+
+👉 This is **core of every backend system (Jira, ClickUp, etc.)**
+
+---
+
+# 🧠 1. What is CRUD?
+
+| Operation | Method | Example     |
+| --------- | ------ | ----------- |
+| Create    | POST   | Add user    |
+| Read      | GET    | Get users   |
+| Update    | PUT    | Edit user   |
+| Delete    | DELETE | Remove user |
+
+---
+
+# 🏗️ 2. Setup (In-Memory DB for Now)
+
+👉 We’ll store data in a Python list (temporary DB)
+
+---
+
+## ✅ Full Code (Copy This)
+
+```python id="l1v6l1"
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+app = FastAPI()
+
+# Model
+class User(BaseModel):
+    id: int
+    name: str
+    age: int
+
+# Fake database
+users = []
+
+# CREATE (POST)
+@app.post("/users")
+def create_user(user: User):
+    users.append(user)
+    return {"message": "User added", "data": user}
+
+# READ ALL (GET)
+@app.get("/users")
+def get_users():
+    return users
+
+# READ ONE (GET)
+@app.get("/users/{user_id}")
+def get_user(user_id: int):
+    for user in users:
+        if user.id == user_id:
+            return user
+    return {"error": "User not found"}
+
+# UPDATE (PUT)
+@app.put("/users/{user_id}")
+def update_user(user_id: int, updated_user: User):
+    for index, user in enumerate(users):
+        if user.id == user_id:
+            users[index] = updated_user
+            return {"message": "User updated", "data": updated_user}
+    return {"error": "User not found"}
+
+# DELETE (DELETE)
+@app.delete("/users/{user_id}")
+def delete_user(user_id: int):
+    for index, user in enumerate(users):
+        if user.id == user_id:
+            users.pop(index)
+            return {"message": "User deleted"}
+    return {"error": "User not found"}
+```
+
+---
+
+# 🔍 Deep Understanding (Flow)
+
+## 🔹 CREATE
+
+```text id="nm8uhg"
+POST /users
+```
+
+👉 Adds user to list
+
+---
+
+## 🔹 READ
+
+```text id="opvrxs"
+GET /users
+GET /users/1
+```
+
+👉 Fetch all or one
+
+---
+
+## 🔹 UPDATE
+
+```text id="2qnngh"
+PUT /users/1
+```
+
+👉 Replace user data
+
+---
+
+## 🔹 DELETE
+
+```text id="1ok2e7"
+DELETE /users/1
+```
+
+👉 Remove user
+
+---
+
+# 🧪 3. Testing (Swagger UI)
+
+Open:
+
+```text id="i8whjh"
+http://127.0.0.1:8000/docs
+```
+
+---
+
+## 👉 Test Order (IMPORTANT)
+
+### 1. Create User
+
+```json id="s8bn52"
+{
+  "id": 1,
+  "name": "Pankaj",
+  "age": 28
+}
+```
+
+---
+
+### 2. Get Users
+
+```text id="1xbwbh"
+GET /users
+```
+
+---
+
+### 3. Get Single User
+
+```text id="tnf4mg"
+/users/1
+```
+
+---
+
+### 4. Update User
+
+```json id="5qpc8c"
+{
+  "id": 1,
+  "name": "Pankaj Updated",
+  "age": 30
+}
+```
+
+---
+
+### 5. Delete User
+
+```text id="14v3mr"
+/users/1
+```
+
+---
+
+# 🚨 Common Mistakes
+
+### ❌ Forgetting ID match
+
+* URL ID ≠ body ID
+
+---
+
+### ❌ Data disappears after restart
+
+👉 Because list = temporary DB
+
+---
+
+# 🧠 Key Concept (VERY IMPORTANT)
+
+```text id="5o3i4t"
+We are simulating a database using a Python list
+```
+
+---
+
+# 📝 ✅ Your Task
+
+## 🔹 Task 1
+
+Run all CRUD APIs
+
+---
+
+## 🔹 Task 2 (Mini Challenge 🔥)
+
+Create same for **Products**:
+
+* id
+* name
+* price
+
+---
+
+# 🎯 Day 5 Outcome
+
+You now can:
+
+* Build full backend logic ✅
+* Handle data lifecycle ✅
+* Understand real API structure ✅
+
+---
+
+# 💬 Quick Check
+
+Answer this:
+
+1. Why does data disappear after restart?
+2. Difference between PUT and POST?
+3. What happens if user not found?
+
+---
+
+Reply:
+
+* ✅ “Done Day 5”
+* ❌ Errors (paste code)
+
+Then we go to
+
+# 🚀 Day 6 (Project Structure + Clean Architecture like real companies)
