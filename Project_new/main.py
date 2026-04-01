@@ -6,4 +6,4 @@ app = FastAPI()
 
 Base.metadata.create_all(bind=engine)   # ✅ create table
 
-app.include_router(router)
+app.include_router(router, prefix="/api/v1")

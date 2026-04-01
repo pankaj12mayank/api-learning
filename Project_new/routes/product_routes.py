@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from schemas.product_schema import ProductCreate, ProductResponse
 from services.product_service import *
 
-router = APIRouter()
+router = APIRouter(tags=["Products"])
 
 # CREATE
 @router.post("/products", response_model=ProductResponse)
