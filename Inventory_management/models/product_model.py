@@ -8,4 +8,3 @@ class ProductDB(Base):
     price = Column(Float)
     quantity = Column(Integer)
     category = Column(String)
-
