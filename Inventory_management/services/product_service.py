@@ -1,9 +1,8 @@
-from itertools import product
 from models.product_model import ProductDB
-from database.db import SessionLocal
+from fastapi import HTTPException
 
-def create_product_services(product):
-    db = SessionLocal()
+# ✅ CREATE
+def create_product_service(product, db):
     new_product = ProductDB(
         name=product.name,
         price=product.price,
@@ -14,46 +13,50 @@ def create_product_services(product):
     db.add(new_product)
     db.commit()
     db.refresh(new_product)
-
-    db.close()
+    
     return new_product
 
-def get_product_services():
-    db = SessionLocal()
+# ✅ GET ALL
+def get_products_service(db):
     return db.query(ProductDB).all()
-    db.close()
-    return products
 
-def get_product_by_id_services(product_id):
-    db = SessionLocal()
+
+# ✅ GET BY ID
+def get_product_service(product_id, db):
     product = db.query(ProductDB).filter(ProductDB.id == product_id).first()
-    db.close()
+
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+
     return product
 
-def updated_product_services(product_id, updated_product):
-    db = SessionLocal()
+
+# ✅ UPDATE
+def update_product_service(product_id, updated_product, db):
     product = db.query(ProductDB).filter(ProductDB.id == product_id).first()
 
-    if product:
-        product.name = updated_product.name
-        product.price = updated_product.price
-        product.quantity = updated_product.quantity
-        product.category = updated_product.category
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
 
-        db.commit()
-        db.refresh(product)
-        db.close()
+    # update fields
+    product.name = updated_product.name
+    product.price = updated_product.price
+    product.quantity = updated_product.quantity
+    product.category = updated_product.category
 
-        return product
-
-    db.close ()
-    return {"message": "product not found"}
-
-
-
-def delete_product_services(product_id):
-    db = SessionLocal()
-    db.query(ProductDB).filter(ProductDB.id == product_id).delete()
     db.commit()
-    db.close()
+    db.refresh(product)
+
+    return product
+
+# ✅ DELETE
+def delete_product_service(product_id, db):
+    product = db.query(ProductDB).filter(ProductDB.id == product_id).first()
+
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+
+    db.delete(product)
+    db.commit()
+
     return {"message": "Product deleted successfully"}
